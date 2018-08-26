@@ -8,6 +8,11 @@ if (!currentUserID) {
 console.log(currentUserID)
 $(document).ready(function () {
 
+    $.get("/api/friends/" + currentUserID, function (data) {
+        console.log(data);
+
+    });
+
 
 
     $.get("/api/authors/" + currentUserID, function (data) {
@@ -34,50 +39,10 @@ $(document).ready(function () {
 });
 
 
-
-var searchInput;
-function getSearchUser() {
-    var searchInput = $("#searchBarInput").val().trim();
-    $.get("/api/authors/checkID/" + searchInput, function (data) {
-        if (!data) {
-            $("#searchBarModal").html("This user Doesn't exist!");
-            $("#search-modal").modal("toggle");
-        } else {
-            // usersContainer.hide();
-            console.log(data);
-            // authorContainer.append(createAuthorRow(data[i]));
-            // authorContainer.append("<br>");
-            var friendDiv = $("<li>");
-            friendDiv.addClass("list-group-item");
-            var userName = "&nbsp" + data.name;
-            var userImg = $("<img>");
-            userImg.css("height", "80px");
-            userImg.css("width", "80px");
-            userImg.attr("src", data.profileImage);
-            var btnFollow = $("<button>");
-            btnFollow.addClass("btn-primary btn-lg");
-            btnFollow.css("cursor", "pointer");
-            btnFollow.text("Follow");
-            var btnProfile = $("<button>");
-            btnProfile.addClass("btn-primary btn-lg");
-            btnProfile.css("cursor", "pointer");
-            btnProfile.text("Profile");
-            // btnProfile.css("margin-left", "5px");
-            // friendDiv.append("Name: "+realName + "<br>");
-            friendDiv.append(userImg);
-            friendDiv.append(userName + "<br>" + "<br>");
-            friendDiv.append(btnFollow);
-            friendDiv.append(btnProfile);
-            usersContainer.html(friendDiv);
-        }
-
-    });
-}
-
 $("#searchBarSubmit").on("click", function(){
+    var searchInput = $("#searchBarInput").val().trim();
+    localStorage.setItem("searched-user", searchInput)
     window.location ="/all-users";
-    getSearchUser();
-    
 });
 
 

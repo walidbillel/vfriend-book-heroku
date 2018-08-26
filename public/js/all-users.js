@@ -2,8 +2,15 @@
 var usersContainer = $(".users-container");
 usersContainer.hide();
 var currentUserID = localStorage.getItem("user");
-getAuthors()
 
+var searchedUser = localStorage.getItem("searched-user")
+$(document).ready(function () {
+if (searchedUser) {
+getSearchUser(searchedUser)
+}
+else {
+  getAuthors()
+}
 
 function getAuthors() {
   $.get("/api/authors", function (data) {
@@ -50,10 +57,9 @@ function getAuthors() {
 
 
 
-var searchInput;
-function getSearchUser() {
-  var searchInput = $("#searchBarInput").val().trim();
-  $.get("/api/authors/checkID/" + searchInput, function (data) {
+function getSearchUser(search) {
+
+  $.get("/api/authors/checkID/" + search, function (data) {
     if (!data) {
       $("#searchBarModal").html("This user Doesn't exist!");
       $("#search-modal").modal("toggle");
@@ -89,8 +95,10 @@ function getSearchUser() {
   });
 }
 
-$("#searchBarSubmit").on("click", getSearchUser);
-
+$("#searchBarSubmit").on("click", function () {
+  var searchInput = $("#searchBarInput").val().trim();
+  getSearchUser(searchInput);
+})
 
 $(document).on("click", ".follow-button", function () {
   event.preventDefault();
@@ -105,21 +113,24 @@ $(document).on("click", ".follow-button", function () {
 });
 
 
-function followUser(follow){
+function followUser(follow) {
   $.post("/api/friends", follow)
     .then(function (res) {
-    getAuthors()
-    console.log("test2")
-  });
+      getAuthors()
+      console.log("test2")
+    });
 
-  
+
 }
 
 $(document).on("click", ".profile-button", function () {
+  localStorage.removeItem("other-user")
   event.preventDefault();
   var followID = $(this).attr("profileID");
   localStorage.setItem("other-user", followID)
   // console.log("you clicked it!!!")
-  
-  window.location ="/other-user/"+ followID; 
+
+  window.location = "/other-user/" + followID;
 }); 
+
+})

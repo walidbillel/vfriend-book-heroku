@@ -21,9 +21,8 @@ module.exports = function (app) {
     // In this case, just db.Author
     db.Friends.findOne({
       where: {
-        id: req.params.id
+        currentuser: req.params.id
       },
-      include: [db.Author]
     }).then(function (dbFriends) {
       res.json(dbFriends);
     });
