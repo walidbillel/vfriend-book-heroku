@@ -37,6 +37,10 @@ module.exports = function(app) {
   app.get("/all-users", function(req, res) {
     res.sendFile(path.join(__dirname, "../public/pages/all-users.html"));
   });
+  
+  app.get("/other-user/:id", function(req, res) {
+    res.sendFile(path.join(__dirname, "../public/pages/other-user.html"));
+  });
 
 
   app.get("/login", function(req, res) {

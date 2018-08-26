@@ -6,7 +6,6 @@ if (!currentUserID) {
 
 $(document).ready(function () {
 
-
   // Get the modal
   // Getting references to the name input and author container, as well as the table body
   var nameInput = $("#author-name");
@@ -17,8 +16,6 @@ $(document).ready(function () {
   var postsContainer = $("#timeline")
   // Adding event listeners to the form to create a new object, and the button to delete
   // an Author
-  $(document).on("submit", "#author-form", handleAuthorFormSubmit);
-  $(document).on("click", ".delete-author", handleDeleteButtonPress);
 
   $(document).on("click", "#submitPost", function () {
     event.preventDefault();
@@ -58,7 +55,7 @@ $(document).ready(function () {
       }
     });
   }
-  getPosts(currentUserID)
+  getPosts(currentUserID);
 
 
   function initializeRows() {
@@ -68,6 +65,7 @@ $(document).ready(function () {
       postsToAdd.push(createNewRow(posts[i]));
     }
     postsContainer.append(postsToAdd);
+    
   }
 
 
@@ -89,7 +87,7 @@ $(document).ready(function () {
     var editBtn = $("<button>");
     editBtn.text("EDIT");
     editBtn.attr("clicker", post.id);
-    editBtn.addClass("edit-post btn btn-info");
+    editBtn.addClass("edit-post btn btn-secondary");
     var newPostBody = $("<h4>");
     var newPostAuthor = $("<h5>");
     var newPostDate = $("<small>");
@@ -104,6 +102,9 @@ $(document).ready(function () {
     newPostCardHeading.append(editBtn);
     newPostCardHeading.append(deleteBtn);
     newPostCard.append(newPostCardHeading);
+    var brkline = $("<br>");
+    newPostCard.append(brkline);
+   
     newPostCard.data("post", post);
     return newPostCard;
   }
@@ -242,46 +243,5 @@ $(document).ready(function () {
   }
 
   // Function for retrieving authors and getting them ready to be rendered to the page
-  function getAuthors() {
-    $.get("/api/authors", function (data) {
-      var rowsToAdd = [];
-      for (var i = 0; i < data.length; i++) {
-        rowsToAdd.push(createAuthorRow(data[i]));
-      }
-      renderAuthorList(rowsToAdd);
-      nameInput.val("");
-    });
-  }
 
-  // A function for rendering the list of authors to the page
-  function renderAuthorList(rows) {
-    authorList.children().not(":last").remove();
-    authorContainer.children(".alert").remove();
-    if (rows.length) {
-      console.log(rows);
-      authorList.prepend(rows);
-    }
-    else {
-      renderEmpty();
-    }
-  }
-
-  // Function for handling what to render when there are no authors
-  function renderEmpty() {
-    var alertDiv = $("<div>");
-    alertDiv.addClass("alert alert-danger");
-    alertDiv.text("You must create an Author before you can create a Post.");
-    authorContainer.append(alertDiv);
-  }
-
-  // Function for handling what happens when the delete button is pressed
-  function handleDeleteButtonPress() {
-    var listItemData = $(this).parent("td").parent("tr").data("author");
-    var id = listItemData.id;
-    $.ajax({
-      method: "DELETE",
-      url: "/api/authors/" + id
-    })
-      .then(getAuthors);
-  }
 });
