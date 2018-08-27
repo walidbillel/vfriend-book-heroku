@@ -306,7 +306,7 @@ $(document).ready(function () {
         event.preventDefault();
         var searchInput = $("#searchBarInput").val().trim();
         localStorage.setItem("searched-user", searchInput)
-        getSearchUser(searchInput);
+        window.location = "/all-users";
         $("#searchBarInput").val("");
     });
 });
