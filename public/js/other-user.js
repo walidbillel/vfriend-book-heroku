@@ -1,5 +1,6 @@
 var otherUser = localStorage.getItem("other-user");
 console.log(otherUser);
+
 var currentUserName = localStorage.getItem("username");
 var currentUserID = localStorage.getItem("user");
 var otherUserName;
@@ -8,7 +9,7 @@ var friendsDataArr = [];
 $(document).ready(function () {
   var postsContainer = $("#timeline2");
   var newPostDiv = $("#newPost");
-
+  var usersContainer = $(".users-container");
   $.get("/api/authors/" + currentUserID, function (data) {
 
     $(".mini-profile-image").attr("src", data.profileImage);
@@ -227,7 +228,7 @@ function updatePost(post) {
 $.get("/api/friends/", function (data) {
   console.log(data);
   for (var i = 0; i < data.length; i++) {
-      if (data[i].currentUser == currentUserID && friendsApiArr.includes(data[i].followedUser) == false) {
+      if (data[i].currentUser == otherUser && friendsApiArr.includes(data[i].followedUser) == false) {
           console.log(data[i].followedUser)
           friendsApiArr.push(data[i].followedUser)
       }
