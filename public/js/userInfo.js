@@ -64,7 +64,7 @@ $(document).ready(function () {
 
                 
             }
-            console.log(friendsDataArr)
+            console.log(friendsDataArr);
             displayFriends()
         });
 
@@ -127,7 +127,8 @@ $(document).ready(function () {
             url: "/api/friends/" + currentUserID + "/" + deleteID
         })
             .then(function () {
-                getFriends()
+                getFriends();
+                location.reload();
             });
 
     });
