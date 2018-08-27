@@ -3,6 +3,8 @@ console.log(otherUser);
 var currentUserName = localStorage.getItem("username");
 var currentUserID = localStorage.getItem("user");
 var otherUserName;
+var friendsApiArr = [];
+var friendsDataArr = [];
 $(document).ready(function () {
   var postsContainer = $("#timeline2");
   var newPostDiv = $("#newPost");
@@ -112,14 +114,14 @@ $(document).ready(function () {
     newPostCard.attr("id", post.id);
     var newPostCardHeading = $("<div>");
     newPostCardHeading.addClass("card-header");
-    // var deleteBtn = $("<button>");
-    //deleteBtn.attr("clicker", post.id);
-    //deleteBtn.text("Delete");
-    // deleteBtn.addClass("delete-post btn btn-danger");
-    // var editBtn = $("<button>");
-    // editBtn.text("EDIT");
-    //  editBtn.attr("clicker", post.id);
-    // editBtn.addClass("edit-post btn btn-info");
+     var deleteBtn = $("<button>");
+    deleteBtn.attr("clicker", post.id);
+    deleteBtn.text("Delete");
+     deleteBtn.addClass("delete-post btn btn-danger");
+     var editBtn = $("<button>");
+     editBtn.text("EDIT");
+      editBtn.attr("clicker", post.id);
+     editBtn.addClass("edit-post btn btn-info");
     var newPostBody = $("<h4>");
     var newPostAuthor = $("<h5>");
     var newPostDate = $("<small>");
@@ -130,8 +132,10 @@ $(document).ready(function () {
     newPostCardHeading.append(newPostAuthor);
     newPostCardHeading.append(newPostDate);
     newPostCardHeading.append("<br>")
-    // newPostCardHeading.append(editBtn);
-    // newPostCardHeading.append(deleteBtn);
+    if (post.postedBy == currentUserName){
+     newPostCardHeading.append(editBtn);
+     newPostCardHeading.append(deleteBtn);
+    }
     newPostCard.append(newPostCardHeading);
     var brkline = $("<br>");
     newPostCard.append(brkline);
@@ -145,12 +149,158 @@ $(document).ready(function () {
     postsContainer.append("<h3>Post on Your Friend's Book!!</h3>")
   }
 
+
+$(document).on("click", ".delete-post", function () {
+  event.preventDefault();
+  console.log("delete-test")
+  var deleteID = $(this).attr("clicker");
+  console.log(deleteID)
+  $.ajax({
+    method: "DELETE",
+    url: "/api/posts/" + deleteID
+  })
+    .then(function () {
+      getPosts(otherUser);
+    });
+
 });
 
 
+$(document).on("click", ".edit-post", function () {
+  console.log("edit-test")
+  event.preventDefault();
+  var editID = $(this).attr("clicker");
+  var postToEdit = $("#" + editID);
+  postToEdit.empty();
+  var newPostCardHeading = $("<div>");
+  newPostCardHeading.addClass("card-header");
+  var updateBtn = $("<button>");
+  updateBtn.attr("clicker", editID);
+  updateBtn.text("Update");
+  updateBtn.addClass("update-post btn btn-info");
+  var exitBtn = $("<button>");
+  exitBtn.text("Cancel");
+  exitBtn.attr("clicker", editID);
+  exitBtn.addClass("cancel-update btn btn-danger");
+  var newPostUpdate = $("<textarea>");
+  newPostUpdate.addClass("update-textarea " + editID)
+  newPostUpdate.addClass("update-textarea")
+  newPostCardHeading.append(newPostUpdate);
+  newPostCardHeading.append(updateBtn);
+  newPostCardHeading.append(exitBtn);
+  postToEdit.append(newPostCardHeading);
+
+})
+
+$(document).on("click", ".update-post", function () {
+  console.log("update-test")
+  var updatePostID = $(this).attr("clicker");
+  var updatedPostText = $("." + updatePostID)
+  var newPostText = {
+    id: updatePostID,
+    postedBy: currentUserName,
+    body: updatedPostText.val().trim(),
+    AuthorId: otherUser
+  };
+  console.log(newPostText)
+  updatePost(newPostText)
+});
+
+$(document).on("click", ".cancel-update", function () {
+  console.log("cancel-test")
+  getPosts(otherUser)
+});
+
+function updatePost(post) {
+  $.ajax({
+    method: "PUT",
+    url: "/api/posts",
+    data: post
+  })
+    .then(function () {
+      //location.reload();
+      getPosts(otherUser);
+    });
+}
+
+
+$.get("/api/friends/", function (data) {
+  console.log(data);
+  for (var i = 0; i < data.length; i++) {
+      if (data[i].currentUser == currentUserID && friendsApiArr.includes(data[i].followedUser) == false) {
+          console.log(data[i].followedUser)
+          friendsApiArr.push(data[i].followedUser)
+      }
+  }
+  console.log(friendsApiArr)
+  getAllAuthors()
+});
+
+function getAllAuthors(){
+$.get("/api/authors/", function (data) {
+  console.log(data + "author data");
+  //array.includes didnt work for comparing data types so i used two for loops
+  for (var i = 0; i < data.length; i++){
+      console.log(data[i].id)
+      console.log(friendsApiArr)
+      for (var x = 0; x < friendsApiArr.length; x++){
+          if (friendsApiArr[x] == data[i].id){
+              friendsDataArr.push(data[i])
+          }
+
+          
+      }   
+  }
+  console.log(friendsDataArr)
+  displayFriends()  
+});
+
+
+
+}
+function displayFriends(){
+for (var i = 0; i < friendsDataArr.length; i++) {
+
+    usersContainer.show();
+    console.log(friendsDataArr[i]);
+    var friendDiv = $("<li>");
+    friendDiv.css("background", "#e6f3f7");
+    friendDiv.addClass("list-group-item");
+    console.log("1")
+    var userName = "&nbsp" + friendsDataArr[i].name;
+    var userImg = $("<img>");
+    userImg.css("height", "80px");
+    userImg.css("width", "80px");
+    userImg.attr("src", friendsDataArr[i].profileImage);
+    userImg.attr("profileID", friendsDataArr[i].id)
+    var btnFollow = $("<button>");
+    btnFollow.addClass("follow-button btn-primary btn-lg");
+    btnFollow.css("cursor", "pointer");
+    btnFollow.text("Follow");
+    btnFollow.attr("profileID", friendsDataArr[i].id)
+    var btnProfile = $("<button>");
+    // console.log("2.5")
+    btnProfile.addClass("profile-button btn-primary btn-lg");
+    btnProfile.css("cursor", "pointer");
+    btnProfile.text("Profile");
+    console.log("2")
+    btnProfile.attr("profileID", friendsDataArr[i].id)
+    friendDiv.append(userImg);
+    friendDiv.append(userName + "<br>" + "<br>");
+    friendDiv.append(btnFollow);
+    friendDiv.append(btnProfile);
+    usersContainer.append(friendDiv);
+    usersContainer.append("<br>")
+    // console.log("3")
+  
+}
+
+}
 
 $("#searchBarSubmit").on("click", function(){
   var searchInput = $("#searchBarInput").val().trim();
   localStorage.setItem("searched-user", searchInput)
   window.location ="/all-users";
 });
+});
+

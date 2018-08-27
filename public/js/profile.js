@@ -3,7 +3,7 @@ var currentUsername;
 if (!currentUserID) {
   //window.location.href = "/"
 }
-
+localStorage.removeItem("searched-user")
 $(document).ready(function () {
 
   // Get the modal
@@ -16,6 +16,25 @@ $(document).ready(function () {
   var postsContainer = $("#timeline")
   // Adding event listeners to the form to create a new object, and the button to delete
   // an Author
+  $.get("/api/authors/" + currentUserID, function (data) {
+    // console.log(data + "dataaaa")
+    console.log(data.name)
+    var userN = data.name;
+    localStorage.setItem("username", data.name);
+    currentUsername = localStorage.getItem("username")
+    console.log(currentUsername)
+    var userName = userN.toUpperCase();
+    $(".current-log").html(userName);
+    $(".current-log2").html("Hello " + userName + " !");
+    var imgDiv = $("#user-image");
+    var userImg = $("<img>");
+    userImg.css("height", "100px");
+    userImg.css("width", "200px");
+    userImg.attr("src", data.profileImage);
+    imgDiv.append(userImg);
+    $(".mini-profile-image").attr("src", data.profileImage);
+    getPosts(currentUserID);
+  });
 
   $(document).on("click", "#submitPost", function () {
     event.preventDefault();
@@ -55,7 +74,7 @@ $(document).ready(function () {
       }
     });
   }
-  getPosts(currentUserID);
+  
 
 
   function initializeRows() {
@@ -99,7 +118,7 @@ $(document).ready(function () {
     newPostCardHeading.append(newPostAuthor);
     newPostCardHeading.append(newPostDate);
     newPostCardHeading.append("<br>")
-    newPostCardHeading.append(editBtn);
+   if(post.postedBy == currentUsername) {newPostCardHeading.append(editBtn);};
     newPostCardHeading.append(deleteBtn);
     newPostCard.append(newPostCardHeading);
     var brkline = $("<br>");
@@ -189,37 +208,7 @@ $(document).ready(function () {
   //getAuthors();
   console.log(currentUserID);
   // A function to handle what happens when the form is submitted to create a new Author
-  function handleAuthorFormSubmit(event) {
-    event.preventDefault();
-    // Don't do anything if the name fields hasn't been filled out
-    if (!nameInput.val().trim().trim()) {
-      return;
-    }
-    // Calling the upsertAuthor function and passing in the value of the name input
-    upsertAuthor({
-      name: nameInput.val().trim()
 
-    });
-  }
-  $.get("/api/authors/" + currentUserID, function (data) {
-    // console.log(data + "dataaaa")
-    console.log(data.name)
-    var userN = data.name;
-    localStorage.setItem("username", data.name);
-    currentUsername = localStorage.getItem("username")
-    console.log(currentUsername)
-    var userName = userN.toUpperCase();
-    $(".current-log").html(userName);
-    $(".current-log2").html("Hello " + userName + " !");
-    var imgDiv = $("#user-image");
-    var userImg = $("<img>");
-    userImg.css("height", "100px");
-    userImg.css("width", "200px");
-    userImg.attr("src", data.profileImage);
-    imgDiv.append(userImg);
-    $(".mini-profile-image").attr("src", data.profileImage);
-
-  });
 
 
 
@@ -228,20 +217,12 @@ $(document).ready(function () {
     $.post("/api/authors", authorData)
       .then(getAuthors);
   }
-
-  // Function for creating a new list row for authors
-  function createAuthorRow(authorData) {
-    console.log(authorData);
-    var newTr = $("<tr>");
-    newTr.data("author", authorData);
-    newTr.append("<td>" + authorData.name + "</td>");
-    newTr.append("<td> " + authorData.Posts.length + "</td>");
-    newTr.append("<td><a href='/blog?author_id=" + authorData.id + "'>Go to Posts</a></td>");
-    newTr.append("<td><a href='/cms?author_id=" + authorData.id + "'>Create a Post</a></td>");
-    newTr.append("<td><a style='cursor:pointer;color:red' class='delete-author'>Delete Author</a></td>");
-    return newTr;
-  }
-
-  // Function for retrieving authors and getting them ready to be rendered to the page
+  $("#searchBarSubmit").on("click", function(){
+    var searchInput = $("#searchBarInput").val().trim();
+    localStorage.setItem("searched-user", searchInput)
+    window.location ="/all-users";
+  });
 
 });
+
+
