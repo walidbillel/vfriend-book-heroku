@@ -14,6 +14,8 @@ $(document).ready(function () {
   var authorId;
   var posts;
   var postsContainer = $("#timeline")
+  var friendsApiArr = [];
+ var friendsDataArr = [];
   $.get("/api/authors/" + currentUserID, function (data) {
     // console.log(data + "dataaaa")
     console.log(data.name)
@@ -31,8 +33,53 @@ $(document).ready(function () {
     userImg.attr("src", data.profileImage);
     imgDiv.append(userImg);
     $(".mini-profile-image").attr("src", data.profileImage);
-    getPosts(currentUserID);
+   getFriends();
   });
+
+
+  function getFriends() {
+    friendsApiArr = [];
+    friendsDataArr = [];
+    $.get("/api/friends/", function (data) {
+        console.log(data);
+        for (var i = 0; i < data.length; i++) {
+            if (data[i].currentUser == currentUserID && friendsApiArr.includes(parseInt(data[i].followedUser)) == false) {
+                console.log(data[i].followedUser)
+                friendsApiArr.push(parseInt(data[i].followedUser))
+            }
+        }
+        console.log(friendsApiArr);
+       // $("#num-of-friends").html(friendsApiArr.length);
+
+        getAllAuthors()
+    });
+}
+function getAllAuthors() {
+  var allPosts = []
+    $.get("/api/authors/", function (data) {
+        console.log(data + "author data");
+        for (var i = 0; i < data.length; i++) {
+            console.log(data[i].Posts)
+            for (var x = 0; x < data[i].Posts.length; x++) {
+              allPosts.push(data[i].Posts[x])
+            }
+            console.log(friendsApiArr)
+                if (friendsApiArr.includes(parseInt(data[i].id))) {
+                    friendsDataArr.push(data[i])
+                }
+
+
+            
+        }
+        console.log(friendsDataArr)
+        console.log(allPosts)
+        var reversedPosts = allPosts.reverse()
+        initializeRows(reversedPosts)
+    });
+
+
+
+}
 
   $(document).on("click", "#submitPost", function () {
     event.preventDefault();
@@ -50,33 +97,16 @@ $(document).ready(function () {
   function submitPost(post) {
     console.log("Test1")
     $.post("/api/posts", post, function () {
-      getPosts(currentUserID)
+      getFriends()
       console.log("test2")
     });
   }
 
-  function getPosts(author) {
-    console.log("test3")
-    authorId = author || "";
-    if (authorId) {
-      authorId = "/?author_id=" + authorId;
-    }
-    $.get("/api/posts" + authorId, function (data) {
-      console.log("Posts", data);
-      posts = data.reverse();
-      if (!posts || !posts.length) {
 
-        displayEmpty();
-      }
-      else {
-        initializeRows();
-      }
-    });
-  }
   
 
 
-  function initializeRows() {
+  function initializeRows(posts) {
     postsContainer.empty();
     var postsToAdd = [];
     for (var i = 0; i < posts.length; i++) {
@@ -117,8 +147,8 @@ $(document).ready(function () {
     newPostCardHeading.append(newPostAuthor);
     newPostCardHeading.append(newPostDate);
     newPostCardHeading.append("<br>")
-   if(post.postedBy == currentUsername) {newPostCardHeading.append(editBtn);};
-    newPostCardHeading.append(deleteBtn);
+   if(post.postedBy == currentUsername) {newPostCardHeading.append(editBtn); newPostCardHeading.append(deleteBtn);};
+    
     newPostCard.append(newPostCardHeading);
     var brkline = $("<br>");
     newPostCard.append(brkline);
@@ -142,7 +172,7 @@ $(document).ready(function () {
       url: "/api/posts/" + deleteID
     })
       .then(function () {
-        getPosts(currentUserID);
+        getFriends();
       });
 
   });
@@ -201,7 +231,7 @@ $(document).ready(function () {
 
   $(document).on("click", ".cancel-update", function () {
     console.log("cancel-test")
-    getPosts(currentUserID)
+    getFriends()
   });
 
   function updatePost(post) {
@@ -211,7 +241,7 @@ $(document).ready(function () {
       data: post
     })
       .then(function () {
-        getPosts(currentUserID);
+        getFriends();
       });
   }
   // Getting the initial list of Authors
@@ -228,11 +258,11 @@ $(document).ready(function () {
       .then(getAuthors);
   }
   $("#searchBarSubmit").on("click", function(){
+    event.preventDefault();
     var searchInput = $("#searchBarInput").val().trim();
     localStorage.setItem("searched-user", searchInput)
-    window.location ="/all-users";
+    getSearchUser(searchInput);
+    $("#searchBarInput").val("");
   });
 
 });
-
-

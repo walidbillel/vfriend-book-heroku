@@ -421,6 +421,7 @@ $(document).ready(function () {
   });
 
   $("#searchBarSubmit").on("click", function () {
+    event.preventDefault();
     var searchInput = $("#searchBarInput").val().trim();
     localStorage.setItem("searched-user", searchInput)
     window.location = "/all-users";

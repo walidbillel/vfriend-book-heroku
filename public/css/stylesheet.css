@@ -9,9 +9,19 @@ textarea{
     resize: none;
 }
 
-#navHeader{
+.navbar{
     background:#4B0082;
-    height: 50px;
+   
+}
+
+#newsF-title {
+    color: #4B0082;
+    font-weight: bold;
+}
+
+.navbar-collapse {
+    background-color: #4B0082;
+    z-index: 9999;
 }
 
 .profile-info {
@@ -71,8 +81,8 @@ textarea{
 }
 
 #logo{
-    height:100px;
-    width:75px;
+    font-family: 'Poller One', cursive;
+    color: white;
 }
 
 #links{
@@ -103,6 +113,7 @@ textarea{
     margin-top: -58px;
     background: #7700cf;
 }
+
 #submitPost:hover {
     background-color: #00a86b;
 }
@@ -149,21 +160,5 @@ footer{
       border-bottom-left-radius: 0;
   }
 
-  #searchBarInput{
-      position: relative;
-      top: -40px;
-      left: 480px;
-  }
 
-  #searchBarSubmit {
-    position: relative;
-    top: -40px;
-    left: 490px;
-    background-color: #7700cf;
-    color: white;
-  }
-
-  #searchBarSubmit:hover {
-    background: #00a86b;
-  }
  
