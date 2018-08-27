@@ -62,7 +62,7 @@ function getAllAuthors() {
             console.log(data[i].Posts)
            
             console.log(friendsApiArr)
-                if (friendsApiArr.includes(parseInt(data[i].id))) {
+            if (friendsApiArr.includes(parseInt(data[i].id)) || data[i].id == currentUserID) {
                   for (var x = 0; x < data[i].Posts.length; x++) {
                     allPosts.push(data[i].Posts[x]);
                   }
