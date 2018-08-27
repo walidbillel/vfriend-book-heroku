@@ -15,13 +15,13 @@ module.exports = function (app) {
     });
 
   // Get route for retrieving a single Friends
-  app.get("/api/friends/:id", function (req, res) {
+  app.get("/api/friends/:currentUser", function (req, res) {
     // Here we add an "include" property to our options in our findOne query
     // We set the value to an array of the models we want to include in a left outer join
     // In this case, just db.Author
     db.Friends.findOne({
       where: {
-        currentuser: req.params.id
+        currentUser: req.params.currentUser
       },
     }).then(function (dbFriends) {
       res.json(dbFriends);
@@ -36,11 +36,12 @@ module.exports = function (app) {
   });
 
   // DELETE route for deleting friends
-  app.delete("/api/friends/:id", function (req, res) {
+  app.delete("/api/friends/:currentUser/:followedUser", function (req, res) {
     console.log("---------------------------------------")
     db.Friends.destroy({
       where: {
-        id: req.params.id
+        currentUser: req.params.currentUser,
+        followedUser:req.params.followedUser
       }
     }).then(function (dbFriends) {
       res.json(dbFriends);

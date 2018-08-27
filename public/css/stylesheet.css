@@ -14,10 +14,41 @@ textarea{
     height: 50px;
 }
 
+.profile-info {
+    background-color: #7700cf;
+    padding: 15px;
+    text-align: center;
+    border-radius: 15px;
+    color: white;
+    height: 180px;
+    width: auto;
+    
+}
+
+::-webkit-scrollbar { 
+    display: none; 
+}
+
+.user-friends {
+    height:200px;
+    overflow: auto;
+
+    
+}
+
 .postForm {
     background-color: #4B0082;
     padding: 5px;
     border-radius: 20px;
+}
+
+#friends-title {
+    background-color:  #7700cf;
+    border: solid black 1px;
+    padding: 10px;
+    text-align: center;
+    color: white;
+    border-radius: 15px;
 }
 
 .postForm2 {
@@ -25,8 +56,8 @@ textarea{
     padding: 10px;
     border-radius: 20px;
     margin-top: 10px;
-    width: 800px;
-    margin-left: 150px;
+    width: auto;
+    margin-left: 200px;
 }
 
 #settings{
@@ -88,6 +119,9 @@ footer{
     color:rgba(148, 148, 148, 0.603);
     font-weight: bold;
     font-size: 18px;
+    padding: 15px;
+    border-radius: 15px;
+    
   };
 
   #vfbtn{

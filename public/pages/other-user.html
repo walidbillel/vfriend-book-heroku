@@ -24,7 +24,7 @@
             <img src="../images/vfriend.png" id="logo" alt="logo">
         </a>
         <li class="nav-item">
-            <a class="nav-link active" href="/newsfeed" id="links"> <span id="other-user-profile"></span> </a>
+            <a class="nav-link active" id="links"> <span id="other-user-profile"></span> </a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="/profile" id="links">My Profile</a>
@@ -49,35 +49,13 @@
         </li>
     </ul>
 
-
-    <!-- User Profile Table -->
-    <!-- <div class="container mt-5 pt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-3 mx-5">
-                <img class="main-profile-image" src="#">
-            </div>
-            <div class="col-md-1">
-                <span id="bioColor">Bio</span>
-            </div>
-           
-
-
-            <div class="col-md-5">
-                <b>Name: <span class="info-name"></span></b>
-                <br><b>Birthday: <span class="info-birthday"></span></b>
-                <br><b>Gender: <span class="info-gender"></span></b>
-                <br><b>Username: <span class="info-username"></span></b>
-                <br><b>E-Mail: <span class="info-email"></span></b>
-                <br><b>Posts: <span class="info-posts"></span></b>
-            </div>
-            
-        </div>
-      
-    </div> -->
     <div class="container" style="margin-top: 80px">
         <div class="row">
             <div class="col-md-2">
                 <!-- Friends stuff -->
+                <ul class="user-friends">
+                    <h4 id="friends-title">Friends <span id="num-of-friends"></span></h4>
+                </ul>
             </div>
             <div class="col-md-4">
                 <img class="main-profile-image">
@@ -86,43 +64,50 @@
                 <span id="bioColor">Bio</span>
             </div>
 
-            <div class="col-md-5">
+            <div class="col-md-5 profile-info">
                 <b>Name: <span class="info-name"></span></b>
                 <br><b>Birthday: <span class="info-birthday"></span></b>
                 <br><b>Gender: <span class="info-gender"></span></b>
                 <br><b>Username: <span class="info-username"></span></b>
                 <br><b>E-Mail: <span class="info-email"></span></b>
-                <br><b>Posts: <span class="info-posts"></span></b>
+                <br><b>Posts: <span class="info-posts"></span></b><br><br>
+                <div class="follow-button">
+                </div>
             </div>
+
+
         </div>
 
-        <div class="row">
+        <div class="row" style="margin-top: 10px">
 
 
-            <div class="col-sm-6">
+            <!-- <div class="col-sm-6">
                 <ul class="list-group justify-content-center mr-5  users-container" style="margin-top:80px;">
 
                 </ul>
 
-            </div>
+            </div> -->
+           
+        
             <div class="col-md-9">
-                
-                    <div class="form-group postForm2">
-                        <label for="newPost"></label>
-                        <textarea class="form-control" id="newPost" rows="4"></textarea>
-                        <button type="submit" class="btn btn-primary mb-2 float-right" id="submitPost" href="/cms">Post</button>
-                    </div>
-                
-                    
 
-                <div class="post-container">
+                <div class="form postForm2">
+                    <label for="newPost"></label>
+                    <textarea class="form-control" id="newPost" rows="4"></textarea>
+                    <button type="submit" class="btn btn-primary mb-2 float-right" id="submitPost">Post</button>
+                </div>
+
+
+
+                <div class="post-container" style="margin-top: 10px">
                     <div id="timeline2">
 
                     </div>
                 </div>
-               
-               
+
+
             </div>
+           
             <!--ends col-lg-8-->
         </div>
     </div>

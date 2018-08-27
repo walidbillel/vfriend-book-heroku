@@ -9,13 +9,11 @@ $(document).ready(function () {
   // Get the modal
   // Getting references to the name input and author container, as well as the table body
   var nameInput = $("#author-name");
-  var authorList = $("tbody");
   var authorContainer = $(".author-container");
   var newPostDiv = $("#newPost")
   var authorId;
+  var posts;
   var postsContainer = $("#timeline")
-  // Adding event listeners to the form to create a new object, and the button to delete
-  // an Author
   $.get("/api/authors/" + currentUserID, function (data) {
     // console.log(data + "dataaaa")
     console.log(data.name)
@@ -25,7 +23,7 @@ $(document).ready(function () {
     console.log(currentUsername)
     var userName = userN.toUpperCase();
     $(".current-log").html(userName);
-    $(".current-log2").html("Hello " + userName + " !");
+    $(".current-log2").html("Hello " + userName + "!");
     var imgDiv = $("#user-image");
     var userImg = $("<img>");
     userImg.css("height", "100px");
@@ -46,6 +44,7 @@ $(document).ready(function () {
     console.log("you clicked it")
     console.log(newPostText)
     submitPost(newPostText);
+    newPostDiv.val("")
   })
 
   function submitPost(post) {
@@ -86,7 +85,7 @@ $(document).ready(function () {
     postsContainer.append(postsToAdd);
     
   }
-
+ 
 
   // This function constructs a post's HTML
   function createNewRow(post) {
@@ -150,11 +149,21 @@ $(document).ready(function () {
 
 
   $(document).on("click", ".edit-post", function () {
-    console.log("edit-test")
+
     event.preventDefault();
     var editID = $(this).attr("clicker");
     var postToEdit = $("#" + editID);
     postToEdit.empty();
+    console.log(editID)
+    var editText;
+    for (var i = 0; i < posts.length; i++){
+      console.log(posts[i])
+      if (posts[i].id == editID){
+        editText = posts[i].body
+      }
+    }
+    
+    console.log(editText)
     var newPostCardHeading = $("<div>");
     newPostCardHeading.addClass("card-header");
     var updateBtn = $("<button>");
@@ -166,6 +175,7 @@ $(document).ready(function () {
     exitBtn.attr("clicker", editID);
     exitBtn.addClass("cancel-update btn btn-danger");
     var newPostUpdate = $("<textarea>");
+    newPostUpdate.val(editText)
     newPostUpdate.addClass("update-textarea " + editID)
     newPostUpdate.addClass("update-textarea")
     newPostCardHeading.append(newPostUpdate);

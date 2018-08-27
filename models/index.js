@@ -4,8 +4,8 @@ var fs = require("fs");
 var path = require("path");
 var Sequelize = require("sequelize");
 var basename = path.basename(module.filename);
-var env = process.env.NODE_ENV || "development";
-var config = require(__dirname + "/../config/config.json")[env];
+// var env = process.env.NODE_ENV || "development";
+var config = require(__dirname + "/../config/config.json");
 var db = {};
 
 if (config.use_env_variable) {
@@ -78,6 +78,33 @@ module.exports = db;
 
 ---------------------------------------------------
 THIS IS FOR CONFIG:
+testing
+{
+    "development": {
+      "username": "root",
+      "password": "root",
+      "database": "blogger",
+      "host": "127.0.0.1",
+      "dialect": "mysql"
+    },
+    "test": {
+      "username": "root",
+      "password": "12345",
+      "database": "database_test",
+      "host": "127.0.0.1",
+      "dialect": "mysql"
+    },
+    "production": {
+      "username": "h0rerm6mlk7mfq1e",
+      "password": "gpql11c7v0woog5m",
+      "database": "vin6z80dledhd1s2",
+      "host": "l9dwvv6j64hlhpul.cbetxkdyhwsb.us-east-1.rds.amazonaws.com",
+      "use_env_variable":"JawsDB_URL", 
+      "dialect": "mysql"
+    }
+  }
+
+  deployed
 {
 
     "username": "tqvud77m8229y8by",

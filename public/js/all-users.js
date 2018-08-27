@@ -2,16 +2,36 @@
 var usersContainer = $(".users-container");
 usersContainer.hide();
 var currentUserID = localStorage.getItem("user");
-
+var friendsApiArr = [];
+var friendsDataArr = [];
 var searchedUser = localStorage.getItem("searched-user")
+
 
 if (searchedUser) {
 getSearchUser(searchedUser)
 
 }
 else {
-  getAuthors()
+  getFriends()
 }
+
+
+  function getFriends() {
+    friendsApiArr = [];
+    friendsDataArr = [];
+    $.get("/api/friends/", function (data) {
+        console.log(data);
+        for (var i = 0; i < data.length; i++) {
+            if (data[i].currentUser == currentUserID && friendsApiArr.includes(parseInt(data[i].followedUser)) == false) {
+                console.log(data[i].followedUser)
+                friendsApiArr.push(parseInt(data[i].followedUser))
+            }
+        }
+        console.log(friendsApiArr)
+        getAuthors()
+    });
+}
+
 
 function getAuthors() {
   $.get("/api/authors", function (data) {
@@ -25,10 +45,13 @@ function getAuthors() {
         friendDiv.css("background", "#e6f3f7");
         friendDiv.addClass("list-group-item");
         // console.log("1")
-        var userName = "&nbsp" + data[i].name;
+        var friendN = data[i].name;
+        var friendNCap = friendN.toUpperCase();
+        var userName = "<b>" + "&nbsp" + friendNCap + "</b>";
         var userImg = $("<img>");
         userImg.css("height", "80px");
         userImg.css("width", "80px");
+        userImg.css("border-radius", "15px");
         userImg.attr("src", data[i].profileImage);
         userImg.attr("profileID", data[i].id)
         var btnFollow = $("<button>");
@@ -36,6 +59,11 @@ function getAuthors() {
         btnFollow.css("cursor", "pointer");
         btnFollow.text("Follow");
         btnFollow.attr("profileID", data[i].id)
+        var btnUnfollow = $("<button>");
+        btnUnfollow.addClass("unfollow-button btn-primary btn-lg");
+        btnUnfollow.css("cursor", "pointer");
+        btnUnfollow.text("Unfollow");
+        btnUnfollow.attr("profileID", data[i].id)
         var btnProfile = $("<button>");
         // console.log("2.5")
         btnProfile.addClass("profile-button btn-primary btn-lg");
@@ -45,7 +73,13 @@ function getAuthors() {
         btnProfile.attr("profileID", data[i].id)
         friendDiv.append(userImg);
         friendDiv.append(userName + "<br>" + "<br>");
-        friendDiv.append(btnFollow);
+        if (friendsApiArr.includes(parseInt(data[i].id))){
+          friendDiv.append(btnUnfollow);
+        }
+        else{
+          friendDiv.append(btnFollow);
+        }
+        
         friendDiv.append(btnProfile);
         usersContainer.append(friendDiv);
         usersContainer.append("<br>")
@@ -72,7 +106,10 @@ function getSearchUser(search) {
       // authorContainer.append("<br>");
       var friendDiv = $("<li>");
       friendDiv.addClass("list-group-item");
-      var userName = "&nbsp" + data.name;
+      friendDiv.css("background", "#e6f3f7");
+      var friendN = data.name;
+      var friendNCap = friendN.toUpperCase();
+      var userName = "<b>" +"&nbsp" + friendNCap + "</b>";
       var userImg = $("<img>");
       userImg.css("height", "80px");
       userImg.css("width", "80px");
@@ -87,11 +124,21 @@ function getSearchUser(search) {
       btnProfile.css("cursor", "pointer");
       btnProfile.attr("profileID", data.id)
       btnProfile.text("Profile");
+      var btnUnfollow = $("<button>");
+      btnUnfollow.addClass("unfollow-button btn-primary btn-lg");
+      btnUnfollow.css("cursor", "pointer");
+      btnUnfollow.text("Unfollow");
+      btnUnfollow.attr("profileID", data.id)
       // btnProfile.css("margin-left", "5px");
       // friendDiv.append("Name: "+realName + "<br>");
       friendDiv.append(userImg);
-      friendDiv.append(userName + "<br>");
-      friendDiv.append(btnFollow);
+      friendDiv.append(userName + "<br>" + "<br>");
+      if (friendsApiArr.includes(parseInt(data.id))){
+        friendDiv.append(btnUnfollow);
+      }
+      else{
+        friendDiv.append(btnFollow);
+      }
       friendDiv.append(btnProfile);
       usersContainer.html(friendDiv);
       
@@ -99,12 +146,22 @@ function getSearchUser(search) {
 
   });
 }
+$.get("/api/authors/" + currentUserID, function(data){
+
+
+  var userN = data.name;
+  var userName = userN.toUpperCase();
+  $(".current-log2").html("Hello " + userName + "!");
+  $(".mini-profile-image").attr("src", data.profileImage);
+});
+
 
 $("#searchBarSubmit").on("click", function () {
   event.preventDefault();
   var searchInput = $("#searchBarInput").val().trim();
   localStorage.setItem("searched-user", searchInput)
   getSearchUser(searchInput);
+  $("#searchBarInput").val("");
 })
 
 $(document).on("click", ".follow-button", function () {
@@ -120,10 +177,25 @@ $(document).on("click", ".follow-button", function () {
 });
 
 
+$(document).on("click", ".unfollow-button", function () {
+  event.preventDefault();
+  console.log("delete-test")
+  var deleteID = $(this).attr("profileID");
+  console.log(deleteID)
+  $.ajax({
+      method: "DELETE",
+      url: "/api/friends/" + currentUserID + "/" + deleteID
+  })
+      .then(function () {
+          getFriends()
+      });
+
+});
+
 function followUser(follow) {
   $.post("/api/friends", follow)
     .then(function (res) {
-      getAuthors()
+      getFriends()
       console.log("test2")
     });
 
