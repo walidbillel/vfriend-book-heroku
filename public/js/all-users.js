@@ -4,9 +4,10 @@ usersContainer.hide();
 var currentUserID = localStorage.getItem("user");
 
 var searchedUser = localStorage.getItem("searched-user")
-$(document).ready(function () {
+
 if (searchedUser) {
 getSearchUser(searchedUser)
+
 }
 else {
   getAuthors()
@@ -58,9 +59,10 @@ function getAuthors() {
 
 
 function getSearchUser(search) {
-
+  localStorage.removeItem("searched-user")
   $.get("/api/authors/checkID/" + search, function (data) {
-    if (!data) {
+    usersContainer.show();
+    if (!data ) {
       $("#searchBarModal").html("This user Doesn't exist!");
       $("#search-modal").modal("toggle");
     } else {
@@ -76,12 +78,14 @@ function getSearchUser(search) {
       userImg.css("width", "80px");
       userImg.attr("src", data.profileImage);
       var btnFollow = $("<button>");
-      btnFollow.addClass("btn-primary btn-lg");
+      btnFollow.addClass("btn-primary follow-button btn-lg");
       btnFollow.css("cursor", "pointer");
       btnFollow.text("Follow");
+      btnFollow.attr("profileID", data.id)
       var btnProfile = $("<button>");
-      btnProfile.addClass("btn-primary btn-lg");
+      btnProfile.addClass("btn-primary profile-button btn-lg");
       btnProfile.css("cursor", "pointer");
+      btnProfile.attr("profileID", data.id)
       btnProfile.text("Profile");
       // btnProfile.css("margin-left", "5px");
       // friendDiv.append("Name: "+realName + "<br>");
@@ -90,13 +94,16 @@ function getSearchUser(search) {
       friendDiv.append(btnFollow);
       friendDiv.append(btnProfile);
       usersContainer.html(friendDiv);
+      
     }
 
   });
 }
 
 $("#searchBarSubmit").on("click", function () {
+  event.preventDefault();
   var searchInput = $("#searchBarInput").val().trim();
+  localStorage.setItem("searched-user", searchInput)
   getSearchUser(searchInput);
 })
 
@@ -133,4 +140,3 @@ $(document).on("click", ".profile-button", function () {
   window.location = "/other-user/" + followID;
 }); 
 
-})
