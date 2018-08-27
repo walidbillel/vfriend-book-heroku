@@ -60,12 +60,12 @@ $(document).ready(function () {
             for (var i = 0; i < data.length; i++) {
                 console.log(data[i].id)
                 console.log(friendsApiArr)
-                    if (friendsApiArr.includes(parseInt(data[i].id))) {
-                        friendsDataArr.push(data[i])
-                    }
+                if (friendsApiArr.includes(parseInt(data[i].id))) {
+                    friendsDataArr.push(data[i])
+                }
 
 
-                
+
             }
             console.log(friendsDataArr)
             displayFriends()
@@ -86,7 +86,7 @@ $(document).ready(function () {
             console.log("1")
             var friendN = friendsDataArr[i].name;
             var friendNCap = friendN.toUpperCase();
-            var userName =  "<b>" + "&nbsp" + friendNCap + "</b>";
+            var userName = "<b>" + "&nbsp" + friendNCap + "</b>";
             var userImg = $("<img>");
             userImg.css("height", "40px");
             userImg.css("width", "40px");
@@ -124,58 +124,58 @@ $(document).ready(function () {
     $(document).on("click", "#submitPost", function () {
         event.preventDefault();
         var newPostText = {
-          postedBy: currentUsername,
-          body: newPostDiv.val().trim(),
-          AuthorId: currentUserID
+            postedBy: currentUsername,
+            body: newPostDiv.val().trim(),
+            AuthorId: currentUserID
         };
         console.log("you clicked it")
         console.log(newPostText)
         submitPost(newPostText);
         newPostDiv.val("")
-      })
-    
-      function submitPost(post) {
+    })
+
+    function submitPost(post) {
         console.log("Test1")
         $.post("/api/posts", post, function () {
-          getPosts(currentUserID)
-          console.log("test2")
+            getPosts(currentUserID)
+            console.log("test2")
         });
-      }
-    
-      function getPosts(author) {
+    }
+
+    function getPosts(author) {
         console.log("test3")
         authorId = author || "";
         if (authorId) {
-          authorId = "/?author_id=" + authorId;
+            authorId = "/?author_id=" + authorId;
         }
         $.get("/api/posts" + authorId, function (data) {
-          console.log("Posts", data);
-          posts = data.reverse();
-          if (!posts || !posts.length) {
-    
-            displayEmpty();
-          }
-          else {
-            initializeRows();
-          }
+            console.log("Posts", data);
+            posts = data.reverse();
+            if (!posts || !posts.length) {
+
+                displayEmpty();
+            }
+            else {
+                initializeRows();
+            }
         });
-      }
-      
-    
-    
-      function initializeRows() {
+    }
+
+
+
+    function initializeRows() {
         postsContainer.empty();
         var postsToAdd = [];
         for (var i = 0; i < posts.length; i++) {
-          postsToAdd.push(createNewRow(posts[i]));
+            postsToAdd.push(createNewRow(posts[i]));
         }
         postsContainer.append(postsToAdd);
-        
-      }
-     
-    
-      // This function constructs a post's HTML
-      function createNewRow(post) {
+
+    }
+
+
+    // This function constructs a post's HTML
+    function createNewRow(post) {
         var formattedDate = new Date(post.updatedAt);
         var updateCreate;
         if (post.createdAt == post.updatedAt) { updateCreate = "Created at " } else { updateCreate = "Updated at " }
@@ -204,52 +204,52 @@ $(document).ready(function () {
         newPostCardHeading.append(newPostAuthor);
         newPostCardHeading.append(newPostDate);
         newPostCardHeading.append("<br>")
-       if(post.postedBy == currentUsername) {newPostCardHeading.append(editBtn);};
+        if (post.postedBy == currentUsername) { newPostCardHeading.append(editBtn); };
         newPostCardHeading.append(deleteBtn);
         newPostCard.append(newPostCardHeading);
         var brkline = $("<br>");
         newPostCard.append(brkline);
-       
+
         newPostCard.data("post", post);
         return newPostCard;
-      }
-    
-      function displayEmpty() {
+    }
+
+    function displayEmpty() {
         postsContainer.empty();
         postsContainer.append("<h3>You have no posts yet, make your first post above!</h3>")
-      }
-    
-      $(document).on("click", ".delete-post", function () {
+    }
+
+    $(document).on("click", ".delete-post", function () {
         event.preventDefault();
         console.log("delete-test")
         var deleteID = $(this).attr("clicker");
         console.log(deleteID)
         $.ajax({
-          method: "DELETE",
-          url: "/api/posts/" + deleteID
+            method: "DELETE",
+            url: "/api/posts/" + deleteID
         })
-          .then(function () {
-            getPosts(currentUserID);
-          });
-    
-      });
-    
-    
-      $(document).on("click", ".edit-post", function () {
-    
+            .then(function () {
+                getPosts(currentUserID);
+            });
+
+    });
+
+
+    $(document).on("click", ".edit-post", function () {
+
         event.preventDefault();
         var editID = $(this).attr("clicker");
         var postToEdit = $("#" + editID);
         postToEdit.empty();
         console.log(editID)
         var editText;
-        for (var i = 0; i < posts.length; i++){
-          console.log(posts[i])
-          if (posts[i].id == editID){
-            editText = posts[i].body
-          }
+        for (var i = 0; i < posts.length; i++) {
+            console.log(posts[i])
+            if (posts[i].id == editID) {
+                editText = posts[i].body
+            }
         }
-        
+
         console.log(editText)
         var newPostCardHeading = $("<div>");
         newPostCardHeading.addClass("card-header");
@@ -269,38 +269,63 @@ $(document).ready(function () {
         newPostCardHeading.append(updateBtn);
         newPostCardHeading.append(exitBtn);
         postToEdit.append(newPostCardHeading);
-    
-      })
-    
-      $(document).on("click", ".update-post", function () {
+
+    })
+
+    $(document).on("click", ".update-post", function () {
         console.log("update-test")
         var updatePostID = $(this).attr("clicker");
         var updatedPostText = $("." + updatePostID)
         var newPostText = {
-          id: updatePostID,
-          postedBy: currentUsername,
-          body: updatedPostText.val().trim(),
-          AuthorId: currentUserID
+            id: updatePostID,
+            postedBy: currentUsername,
+            body: updatedPostText.val().trim(),
+            AuthorId: currentUserID
         };
         console.log(newPostText)
         updatePost(newPostText)
-      });
-    
-      $(document).on("click", ".cancel-update", function () {
+    });
+
+    $(document).on("click", ".cancel-update", function () {
         console.log("cancel-test")
         getPosts(currentUserID)
-      });
-    
-      function updatePost(post) {
+    });
+
+    function updatePost(post) {
         $.ajax({
-          method: "PUT",
-          url: "/api/posts",
-          data: post
+            method: "PUT",
+            url: "/api/posts",
+            data: post
         })
-          .then(function () {
-            getPosts(currentUserID);
-          });
-      }
+            .then(function () {
+                getPosts(currentUserID);
+            });
+    }
+
+    $(document).on("click", ".unfollow-button", function () {
+        event.preventDefault();
+        console.log("delete-test")
+        var deleteID = $(this).attr("profileID");
+        console.log(deleteID)
+        $.ajax({
+            method: "DELETE",
+            url: "/api/friends/" + currentUserID + "/" + deleteID
+        })
+            .then(function () {
+                getFriends()
+                location.reload()
+            });
+
+    });
+
+    $(document).on("click", ".profile-button", function () {
+        localStorage.removeItem("other-user")
+        event.preventDefault();
+        var profileID = $(this).attr("profileID");
+        localStorage.setItem("other-user", profileID)
+        // console.log("you clicked it!!!")
+        window.location = "/other-user/" + profileID;
+    });
 
     $("#searchBarSubmit").on("click", function () {
         event.preventDefault();
