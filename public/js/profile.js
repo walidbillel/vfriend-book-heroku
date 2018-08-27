@@ -60,12 +60,12 @@ function getAllAuthors() {
         console.log(data + "author data");
         for (var i = 0; i < data.length; i++) {
             console.log(data[i].Posts)
-            for (var x = 0; x < data[i].Posts.length; x++) {
-              allPosts.push(data[i].Posts[x])
-            }
+           
             console.log(friendsApiArr)
                 if (friendsApiArr.includes(parseInt(data[i].id))) {
-                    friendsDataArr.push(data[i])
+                  for (var x = 0; x < data[i].Posts.length; x++) {
+                    allPosts.push(data[i].Posts[x]);
+                  }
                 }
 
 
