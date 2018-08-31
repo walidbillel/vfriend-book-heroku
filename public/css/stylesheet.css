@@ -17,6 +17,7 @@ textarea{
 #newsF-title {
     color: #4B0082;
     font-weight: bold;
+    font-family: 'Poller One', cursive;
 }
 
 .navbar-collapse {
@@ -31,7 +32,7 @@ textarea{
     border-radius: 15px;
     color: white;
     height: 180px;
-    width: auto;
+    /* width: auto; */
     
 }
 
@@ -66,8 +67,7 @@ textarea{
     padding: 10px;
     border-radius: 20px;
     margin-top: 10px;
-    width: auto;
-    margin-left: 200px;
+   
 }
 
 #settings{
@@ -90,9 +90,9 @@ textarea{
     color: white;
 }
 
-#timeline2 {
+/* #timeline2 {
     margin-left: 200px;
-}
+} */
 
 #newPost{
    
@@ -100,13 +100,13 @@ textarea{
     
 }
 
-#timeline{
+/* #timeline{
     height: 200px;
-    width: 650px;
-    margin-left:20%;
+    
+    /* margin-left:20%; */
  
   
-}
+/* } */
 
 #submitPost{
     margin-left: 00px;

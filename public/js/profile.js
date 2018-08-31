@@ -19,6 +19,7 @@ $(document).ready(function () {
   $.get("/api/authors/" + currentUserID, function (data) {
     // console.log(data + "dataaaa")
     console.log(data.name)
+
     var userN = data.name;
     localStorage.setItem("username", data.name);
     currentUsername = localStorage.getItem("username")

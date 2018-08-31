@@ -21,6 +21,7 @@ $(document).ready(function () {
         $(".info-birthday").html(data.birthday);
         $(".info-gender").html(data.sex.toUpperCase());
         $(".info-username").html(data.name.toUpperCase());
+        $(".current-log2").html("Hello " + data.name.toUpperCase() + "!");
         currentUsername = data.name;
         $(".info-email").html(data.email);
         $(".info-posts").html(data.Posts.length);

@@ -36,7 +36,7 @@ $(document).ready(function () {
       var userN = data.name;
       var userName = userN.toUpperCase();
       userName = "Hello " + userName + " !";
-      $(".current-log").text(userName);
+      $(".current-log2").text(userName);
       getFriends()
     });
   }
