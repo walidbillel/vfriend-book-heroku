@@ -1,3 +1,4 @@
+//declare local variables
 var currentUserID = localStorage.getItem("user");
 var usersContainer = $(".users-container");
 localStorage.removeItem("searched-user")
@@ -13,6 +14,8 @@ if (!currentUserID) {
 }
 console.log(currentUserID)
 $(document).ready(function () {
+
+    //get request to get the info for the current user and loads it into the profile page
     $.get("/api/authors/" + currentUserID, function (data) {
         // attach stuff here to the divs
         // like $(".current-log").html(userName);
@@ -34,10 +37,12 @@ $(document).ready(function () {
         $(".main-profile-image").css("height", "200px");
         $(".main-profile-image").css("border-radius", "20px");
         $(".mini-profile-image").attr("src", data.profileImage);
-        getFriends()
+        //get users friends and posts afterwards
+        getFriends();
         getPosts(currentUserID);
     });
 
+    //when we get all friends we call the friends table and add all the friend IDs to the friends array
     function getFriends() {
         friendsApiArr = [];
         friendsDataArr = [];
@@ -55,6 +60,8 @@ $(document).ready(function () {
             getAllAuthors()
         });
     }
+    
+    //we then get all users and add them to the friends data array 
     function getAllAuthors() {
         $.get("/api/authors/", function (data) {
             console.log(data + "author data");
@@ -65,16 +72,13 @@ $(document).ready(function () {
                     friendsDataArr.push(data[i])
                 }
 
-
-
             }
             console.log(friendsDataArr)
             displayFriends()
         });
-
-
-
     }
+
+    //we then display all the friends data in the friends tab on the user profile page. It pulls data from the friends data array created in getAllAuthors
     function displayFriends() {
         usersContainer.empty();
         for (var i = 0; i < friendsDataArr.length; i++) {
@@ -115,13 +119,12 @@ $(document).ready(function () {
             friendDiv.append(btnUnfollow);
             friendDiv.append(btnProfile);
             userFriends.append(friendDiv);
-            userFriends.append("<br>")
+            userFriends.append("<br>");
             // console.log("3")
-
         }
-
     }
 
+    //another submit post function which takes in a post and adds it to the posts database
     $(document).on("click", "#submitPost", function () {
         event.preventDefault();
         var newPostText = {
@@ -143,6 +146,7 @@ $(document).ready(function () {
         });
     }
 
+    //this gets all post from the current users ID and displays them if there are any posts, otherwise id runs displayempty function
     function getPosts(author) {
         console.log("test3")
         authorId = author || "";
@@ -162,8 +166,7 @@ $(document).ready(function () {
         });
     }
 
-
-
+    //adding each posts data to the post array and appending it to the posts container
     function initializeRows() {
         postsContainer.empty();
         var postsToAdd = [];
@@ -173,7 +176,6 @@ $(document).ready(function () {
         postsContainer.append(postsToAdd);
 
     }
-
 
     // This function constructs a post's HTML
     function createNewRow(post) {
@@ -215,11 +217,13 @@ $(document).ready(function () {
         return newPostCard;
     }
 
+    //displays the user has no posts if they dont have any posts
     function displayEmpty() {
         postsContainer.empty();
         postsContainer.append("<h3>You have no posts yet, make your first post above!</h3>")
     }
 
+    //delete post click function which takes in the post ID and deletes it from the database
     $(document).on("click", ".delete-post", function () {
         event.preventDefault();
         console.log("delete-test")
@@ -232,10 +236,9 @@ $(document).ready(function () {
             .then(function () {
                 getPosts(currentUserID);
             });
-
     });
 
-
+    //edit post button which takes the id of the post and creates a text box out of the current post field
     $(document).on("click", ".edit-post", function () {
 
         event.preventDefault();
@@ -271,8 +274,9 @@ $(document).ready(function () {
         newPostCardHeading.append(exitBtn);
         postToEdit.append(newPostCardHeading);
 
-    })
+    });
 
+    //this confirms the post update with the new post data and then runs updatePost which puts the data into the correct post ID updating the mysql database
     $(document).on("click", ".update-post", function () {
         console.log("update-test")
         var updatePostID = $(this).attr("clicker");
@@ -287,11 +291,13 @@ $(document).ready(function () {
         updatePost(newPostText)
     });
 
+    //this cancels the update field and refreses the js back to getfriends
     $(document).on("click", ".cancel-update", function () {
         console.log("cancel-test")
         getPosts(currentUserID)
     });
 
+    //update post put method and then runs getfrinds to refresh the js
     function updatePost(post) {
         $.ajax({
             method: "PUT",
@@ -303,6 +309,7 @@ $(document).ready(function () {
             });
     }
 
+    //unfollow button which deletes the friends table entry with both the userID and the unfollowed users ID
     $(document).on("click", ".unfollow-button", function () {
         event.preventDefault();
         console.log("delete-test")
@@ -316,9 +323,9 @@ $(document).ready(function () {
                 getFriends()
                 location.reload()
             });
-
     });
 
+    //profile on each users card which when clicked links the user to the other users profile page
     $(document).on("click", ".profile-button", function () {
         localStorage.removeItem("other-user")
         event.preventDefault();
@@ -328,6 +335,7 @@ $(document).ready(function () {
         window.location = "/other-user/" + profileID;
     });
 
+    //search bar function which redirects the user to the members page and captures the search input in local storage
     $("#searchBarSubmit").on("click", function () {
         event.preventDefault();
         var searchInput = $("#searchBarInput").val().trim();

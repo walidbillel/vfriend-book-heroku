@@ -4,7 +4,7 @@ var passEmail;
 var currentUserID = localStorage.getItem("user");
 
 console.log(currentUserID);
-
+//get password button takes in the user info for the username and email
 $("#get-pass").on("click", function (event) {
 
     event.preventDefault();
@@ -13,6 +13,7 @@ $("#get-pass").on("click", function (event) {
 
     //    console.log(passEmail + " " + passName)
 
+    //it then checks the information in the mysql database gives the user their password through a modal box
     $.get("/api/authors/password/" + passName + "/" + passEmail, function (data) {
        
         if (!data) {

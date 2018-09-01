@@ -10,17 +10,20 @@ $("#new-user").on("click", function () {
   var userPass = $("#password").val().trim();
   var cfpass = $("#pass-conf").val().trim();
 
-
+  //if the user hasnt entered a value into the text field than we alert them of an error
   if (!nameInput || !actualName || !emailInput || !imagLink || !birthdayInput || !gender || !userPass || !cfpass) {
     // alert("Please fill all fields!")
     $(".alert-message").html("Please Fill All Fields!");
     $("#alert-modal").modal("toggle");
   }
+
+  //if the user hasnt entered the same password we alert them of an error
   else if (!(userPass === cfpass)) {
     // alert("Passwords Don't Match!!");
     $(".alert-message").html("Passwords Don't Match!");
     $("#alert-modal").modal("toggle");
   }
+  //otherwise we create a new user object
   else {
 
     var userNameObject = {
@@ -42,7 +45,7 @@ $("#new-user").on("click", function () {
 });
 
 
-
+//we then post the nw user data to the server.. the username and email must be unique or it throws an error
 function upsertNewUser(newUserData) {
   $.post("/api/authors", newUserData)
     .then(function (res, err) {
@@ -56,7 +59,7 @@ function upsertNewUser(newUserData) {
       else {
         window.location.href = "/login"
       }
-    })
+    });
 }
 
 
