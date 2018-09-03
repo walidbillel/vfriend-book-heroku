@@ -1,20 +1,24 @@
+
+// Require our models to work with sequelize
 var db = require("../models");
 
+// export the routes
 module.exports = function(app) {
-  // Find all Authors and return them to the user with res.json
+  // Find all Users and return them to the user with res.json
   app.get("/api/authors", function(req, res) {
     db.Author.findAll({ include: [db.Post]}).then(function(dbAuthor) {
       res.json(dbAuthor);
     });
   });
 
+  // Find all the friends including their posts
   app.get("/api/authors/friends", function(req, res) {
     db.Author.findAll({ include: [db.Post]}).then(function(dbAuthor) {
       res.json(dbAuthor);
     });
   });
 
-
+// Route associated with name in the database
   app.get("/api/authors/checkID/:name", function(req, res) {
     db.Author.findOne({
       where: {
@@ -27,8 +31,7 @@ module.exports = function(app) {
     });
   });
 
-
-
+// Route associated with id in the database
   app.get("/api/authors/:id", function(req, res) {
     // Find one Author with the id in req.params.id and return them to the user with res.json
     db.Author.findOne({
@@ -42,6 +45,7 @@ module.exports = function(app) {
     });
   });
 
+  // Route for the login 
   app.get("/api/authors/:name/:password", function(req, res) {
     // Find one Author with the id in req.params.id and return them to the user with res.json
 
@@ -56,6 +60,7 @@ module.exports = function(app) {
     })
   });
 
+  // Route for retrieving the password
   app.get("/api/authors/password/:realName/:email", function(req, res) {
    
     console.log(res);
@@ -73,7 +78,7 @@ module.exports = function(app) {
   });
 
 
-
+// Route for posting a new user
   app.post("/api/authors", function(req, res) {
     // Create an Author with the data available to us in req.body
     console.log(req.body);
@@ -85,6 +90,7 @@ module.exports = function(app) {
     });
   });
 
+  // Route for deleting a specific user
   app.delete("/api/authors/:id", function(req, res) {
     // Delete the Author with the id available to us in req.params.id
     db.Author.destroy({
